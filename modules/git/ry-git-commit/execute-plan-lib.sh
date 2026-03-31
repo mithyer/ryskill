@@ -34,15 +34,17 @@ with open(plan_file, "r", encoding="utf-8") as handle:
         if len(parts) != 4:
             continue
 
-        bucket, candidate, _message, file_path = parts
-        existing = seen[bucket].get(file_path)
-        if existing is not None and existing != candidate:
-            print(f"bucket={bucket}")
-            print(f"file={file_path}")
-            print(f"first_candidate={existing}")
-            print(f"second_candidate={candidate}")
-            sys.exit(1)
+        bucket, candidate, _message, files_column = parts
+        file_paths = [path.strip() for path in files_column.split(",") if path.strip()]
+        for file_path in file_paths:
+            existing = seen[bucket].get(file_path)
+            if existing is not None and existing != candidate:
+                print(f"bucket={bucket}")
+                print(f"file={file_path}")
+                print(f"first_candidate={existing}")
+                print(f"second_candidate={candidate}")
+                sys.exit(1)
 
-        seen[bucket][file_path] = candidate
+            seen[bucket][file_path] = candidate
 PY
 }

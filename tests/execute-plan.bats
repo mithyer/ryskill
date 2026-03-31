@@ -93,6 +93,32 @@ EOF
     $'error=invalid_plan_row\nfailed_phase=validate\nline_number=2\nline=[staged]|2|missing files column'
 }
 
+@test "fails closed when files column exists but is empty" {
+  cat <<'EOF' > "$plan_file"
+[staged]|1|fix(parser): keep tokens explicit|
+EOF
+
+  run bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
+
+  [ "$status" -eq 1 ]
+  assert_structured_error \
+    "invalid_plan_row" \
+    "validate" \
+    $'error=invalid_plan_row\nfailed_phase=validate\nline_number=1\nline=[staged]|1|fix(parser): keep tokens explicit|'
+}
+
+@test "fails closed when files column is only whitespace" {
+  printf '%s\n' '[staged]|1|fix(parser): keep tokens explicit|   ' > "$plan_file"
+
+  run bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
+
+  [ "$status" -eq 1 ]
+  assert_structured_error \
+    "invalid_plan_row" \
+    "validate" \
+    $'error=invalid_plan_row\nfailed_phase=validate\nline_number=1\nline=[staged]|1|fix(parser): keep tokens explicit|   '
+}
+
 @test "fails explicitly after validation while execution remains disabled" {
   run bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
 

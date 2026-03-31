@@ -21,43 +21,97 @@ ry_git_commit_plan_is_empty() {
   [[ ! -s "$plan_file" ]]
 }
 
+ry_git_commit_emit_invalid_plan_row() {
+  local line_number="$1"
+  local line="$2"
+
+  printf 'error=invalid_plan_row\n'
+  printf 'failed_phase=validate\n'
+  printf 'line_number=%s\n' "$line_number"
+  printf 'line=%s\n' "$line"
+}
+
+ry_git_commit_trim_whitespace() {
+  local value="$1"
+
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  printf '%s' "$value"
+}
+
 ry_git_commit_validate_no_duplicate_files_in_bucket() {
   local plan_file="$1"
+  local seen_entries=""
+  local raw_line
+  local line
+  local line_number=0
+  local bucket
+  local candidate
+  local message
+  local files_column
+  local normalized_files
+  local file_path
+  local existing_candidate
+  local seen_bucket
+  local seen_file
+  local seen_candidate
+  local extra
+  local -a file_paths=()
 
-  python3 - "$plan_file" <<'PY'
-import sys
-from collections import defaultdict
+  while IFS= read -r raw_line || [[ -n "$raw_line" ]]; do
+    line_number=$((line_number + 1))
+    line="${raw_line%$'\r'}"
+    [[ -n "${line//[[:space:]]/}" ]] || continue
 
-plan_file = sys.argv[1]
-seen = defaultdict(dict)
+    if [[ "$line" != *"|"*"|"*"|"* ]]; then
+      ry_git_commit_emit_invalid_plan_row "$line_number" "$line"
+      return 1
+    fi
 
-with open(plan_file, "r", encoding="utf-8") as handle:
-    for line_number, raw_line in enumerate(handle, start=1):
-        line = raw_line.strip()
-        if not line:
-            continue
+    IFS='|' read -r bucket candidate message files_column extra <<< "$line"
+    if [[ -n "${extra-}" ]]; then
+      ry_git_commit_emit_invalid_plan_row "$line_number" "$line"
+      return 1
+    fi
 
-        parts = line.split("|", 3)
-        if len(parts) != 4:
-            print("error=invalid_plan_row")
-            print("failed_phase=validate")
-            print(f"line_number={line_number}")
-            print(f"line={line}")
-            sys.exit(1)
+    normalized_files=""
+    IFS=',' read -ra file_paths <<< "$files_column"
+    for file_path in "${file_paths[@]}"; do
+      file_path="$(ry_git_commit_trim_whitespace "$file_path")"
+      [[ -n "$file_path" ]] || continue
+      normalized_files+="$file_path"$'\n'
+    done
 
-        bucket, candidate, _message, files_column = parts
-        file_paths = [path.strip() for path in files_column.split(",") if path.strip()]
-        for file_path in file_paths:
-            existing = seen[bucket].get(file_path)
-            if existing is not None and existing != candidate:
-                print("error=duplicate_file_in_bucket")
-                print("failed_phase=validate")
-                print(f"bucket={bucket}")
-                print(f"file={file_path}")
-                print(f"first_candidate={existing}")
-                print(f"second_candidate={candidate}")
-                sys.exit(1)
+    if [[ -z "$normalized_files" ]]; then
+      ry_git_commit_emit_invalid_plan_row "$line_number" "$line"
+      return 1
+    fi
 
-            seen[bucket][file_path] = candidate
-PY
+    while IFS= read -r file_path; do
+      [[ -n "$file_path" ]] || continue
+      existing_candidate=""
+
+      while IFS=$'\t' read -r seen_bucket seen_file seen_candidate; do
+        [[ -n "$seen_bucket" ]] || continue
+        if [[ "$seen_bucket" == "$bucket" && "$seen_file" == "$file_path" ]]; then
+          existing_candidate="$seen_candidate"
+          break
+        fi
+      done <<< "$seen_entries"
+
+      if [[ -n "$existing_candidate" && "$existing_candidate" != "$candidate" ]]; then
+        printf 'error=duplicate_file_in_bucket\n'
+        printf 'failed_phase=validate\n'
+        printf 'bucket=%s\n' "$bucket"
+        printf 'file=%s\n' "$file_path"
+        printf 'first_candidate=%s\n' "$existing_candidate"
+        printf 'second_candidate=%s\n' "$candidate"
+        return 1
+      fi
+
+      if [[ -z "$existing_candidate" ]]; then
+        seen_entries+="$bucket"$'\t'"$file_path"$'\t'"$candidate"$'\n'
+      fi
+    done <<< "$normalized_files"
+  done < "$plan_file"
 }

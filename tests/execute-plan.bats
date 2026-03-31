@@ -12,19 +12,33 @@ teardown() {
   rm -rf "$temp_dir"
 }
 
-@test "fails explicitly while execute-plan remains dry-run skeleton" {
+@test "fails when execution plan is empty" {
+  : > "$plan_file"
+
   run bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
 
   [ "$status" -eq 1 ]
-  [[ "$output" == *"error=execute_plan_not_implemented"* ]]
-  [[ "$output" == *"mode=dry_run_only"* ]]
+  [[ "$output" == *"error=empty_execution_plan"* ]]
+  [[ "$output" == *"failed_phase=validate"* ]]
 }
 
-@test "fails explicitly when execute is requested but not implemented" {
-  run env RY_GIT_COMMIT_ALLOW_EXECUTE=1 bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
+@test "fails when same bucket contains duplicate file across candidates" {
+  cat <<'EOF' > "$plan_file"
+[staged]|1|fix(parser): keep tokens explicit|runtime/selection-parser.sh
+[staged]|2|fix(parser): keep parser explicit|runtime/selection-parser.sh
+EOF
+
+  run bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
 
   [ "$status" -eq 1 ]
-  [[ "$output" == *"error=execute_plan_not_implemented"* ]]
-  [[ "$output" == *"mode=execute_requested_but_unimplemented"* ]]
-  [[ "$output" != *"preview_only"* ]]
+  [[ "$output" == *"error=duplicate_file_in_bucket"* ]]
+  [[ "$output" == *"failed_phase=validate"* ]]
+}
+
+@test "fails explicitly after validation while execution remains disabled" {
+  run bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"error=execution_not_yet_enabled"* ]]
+  [[ "$output" == *"failed_phase=snapshot"* ]]
 }

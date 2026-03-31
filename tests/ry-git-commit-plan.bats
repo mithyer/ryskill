@@ -11,3 +11,11 @@ EOF
   [[ "$output" == *"[unstaged]|3|docs(readme): update install example"* ]]
   [[ "$output" != *"|2|"* ]]
 }
+
+@test "single candidate contract can bypass selection by selecting its only index" {
+  run bash modules/git/ry-git-commit/build-execution-plan.sh '12' <<'EOF'
+[staged]|12|fix(parser): keep tokens explicit|runtime/selection-parser.sh
+EOF
+  [ "$status" -eq 0 ]
+  [ "$output" = "[staged]|12|fix(parser): keep tokens explicit|runtime/selection-parser.sh" ]
+}

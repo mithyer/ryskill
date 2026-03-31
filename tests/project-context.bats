@@ -11,3 +11,10 @@
   [ "$status" -eq 0 ]
   [[ "$output" == *"branch=feature/demo"* ]]
 }
+
+@test "returns usage and argument error when option value is missing" {
+  run bash runtime/project-context.sh --cwd "$PWD" --branch
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"usage: runtime/project-context.sh [--cwd PATH] [--project PATH] [--branch NAME]"* ]]
+  [[ "$output" == *"error=missing_argument_value flag=--branch"* ]]
+}

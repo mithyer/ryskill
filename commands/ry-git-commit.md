@@ -15,6 +15,7 @@ Use the helpers in this order:
 
 If only one candidate exists, skip selection and commit directly.
 Always preserve unselected changes.
+Current implementation note: `execute-plan.sh` is still a dry-run/preview skeleton and must fail explicitly instead of pretending to perform a real commit.
 
 Supported arguments:
 - `--project <project>`

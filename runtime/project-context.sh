@@ -1,15 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+usage() {
+  echo "usage: $0 [--cwd PATH] [--project PATH] [--branch NAME]" >&2
+}
+
+require_value() {
+  local flag="$1"
+  local value="${2-}"
+
+  if [[ -z "$value" || "$value" == --* ]]; then
+    usage
+    echo "error=missing_argument_value flag=$flag" >&2
+    exit 1
+  fi
+}
+
 cwd=""
 project=""
 branch=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --cwd) cwd="$2"; shift 2 ;;
-    --project) project="$2"; shift 2 ;;
-    --branch) branch="$2"; shift 2 ;;
+    --cwd)
+      require_value "$1" "${2-}"
+      cwd="$2"
+      shift 2
+      ;;
+    --project)
+      require_value "$1" "${2-}"
+      project="$2"
+      shift 2
+      ;;
+    --branch)
+      require_value "$1" "${2-}"
+      branch="$2"
+      shift 2
+      ;;
     *) echo "unknown argument: $1" >&2; exit 1 ;;
   esac
 done

@@ -19,3 +19,12 @@ teardown() {
   [[ "$output" == *"error=execute_plan_not_implemented"* ]]
   [[ "$output" == *"mode=dry_run_only"* ]]
 }
+
+@test "fails explicitly when execute is requested but not implemented" {
+  run env RY_GIT_COMMIT_ALLOW_EXECUTE=1 bash modules/git/ry-git-commit/execute-plan.sh . "$plan_file"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"error=execute_plan_not_implemented"* ]]
+  [[ "$output" == *"mode=execute_requested_but_unimplemented"* ]]
+  [[ "$output" != *"preview_only"* ]]
+}

@@ -1,6 +1,6 @@
 # ryskill
 
-`ryskill` is a standalone Claude plugin repository installed from GitHub via `plugin install`.
+`ryskill` is the canonical Claude plugin source repository.
 
 ## Commands
 - `/ry-git-commit`
@@ -22,11 +22,16 @@
 The command groups candidates into staged and unstaged sections, shows file lists, and asks which numbered candidates to commit.
 
 ## Installation
-This repository is the development source for `ryskill`.
 
-For Claude Code marketplace installation, use the marketplace repository:
+### Direct source repository
+
+This repository contains the canonical plugin manifest and implementation.
+
+### Claude Code marketplace discovery
+
+For marketplace-based installation, use the marketplace index repository:
 
 ```bash
-/plugin marketplace add ray/ryskill-marketplace
+/plugin marketplace add mithyer/ryskill-marketplace
 /plugin install ryskill@ryskill-marketplace
 ```

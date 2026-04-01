@@ -22,4 +22,11 @@
 The command groups candidates into staged and unstaged sections, shows file lists, and asks which numbered candidates to commit.
 
 ## Installation
-Document the GitHub install command here once the repository remote exists.
+This repository is the development source for `ryskill`.
+
+For Claude Code marketplace installation, use the marketplace repository:
+
+```bash
+/plugin marketplace add ray/ryskill-marketplace
+/plugin install ryskill@ryskill-marketplace
+```

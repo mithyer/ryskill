@@ -12,6 +12,16 @@ EOF
   [[ "$output" != *"|2|"* ]]
 }
 
+@test "builds a valid plan row from selected numeric stdin" {
+  script_path="$BATS_TEST_DIRNAME/../modules/git/ry-git-commit/build-execution-plan.sh"
+  candidate_row='[staged]|1|fix(parser): keep tokens explicit|runtime/selection-parser.sh'
+
+  run bash -c 'selection=$(bash "$1" 1 <<<"1") && printf "%s\n" "$2" | bash "$1" "$selection"' _ "$script_path" "$candidate_row"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "$candidate_row" ]
+}
+
 @test "single candidate contract can bypass selection by selecting its only index" {
   run bash modules/git/ry-git-commit/build-execution-plan.sh '12' <<'EOF'
 [staged]|12|fix(parser): keep tokens explicit|runtime/selection-parser.sh

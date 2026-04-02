@@ -1,13 +1,13 @@
 # ryskill Design Spec
 
 Date: 2026-03-30
-Topic: ryskill plugin with initial git module and /ry-git-commit command
+Topic: ryskill plugin with initial git module and /ry:git-commit command
 
 ## 1. Overview
 
-`ryskill` is a standalone Claude plugin repository installed from GitHub via `plugin install`. It is not embedded inside any existing project repository. The plugin is designed as a lightweight host with module-based expansion. The first module is `git`, and the first command is `/ry-git-commit`.
+`ryskill` is a standalone Claude plugin repository installed from GitHub via `plugin install`. It is not embedded inside any existing project repository. The plugin is designed as a lightweight host with module-based expansion. The first module is `git`, and the first command is `/ry:git-commit`.
 
-The goal of `/ry-git-commit` is to analyze the current working tree, split changes into transaction-oriented commit candidates, and let the user commit selected candidates while preserving all unselected changes in the working tree.
+The goal of `/ry:git-commit` is to analyze the current working tree, split changes into transaction-oriented commit candidates, and let the user commit selected candidates while preserving all unselected changes in the working tree.
 
 ## 2. Product Boundaries
 
@@ -16,7 +16,7 @@ The goal of `/ry-git-commit` is to analyze the current working tree, split chang
 - Installable Claude plugin structure
 - Modular host shape for future expansion
 - `git` module
-- `/ry-git-commit` command
+- `/ry:git-commit` command
 - Candidate generation for staged and unstaged changes
 - User selection flow for multiple commit candidates
 - Safe execution preserving unselected changes
@@ -45,7 +45,7 @@ The goal of `/ry-git-commit` is to analyze the current working tree, split chang
 Each module owns its domain logic and plugs into the host through a stable registration surface.
 
 ### Command responsibilities
-The `/ry-git-commit` command owns:
+The `/ry:git-commit` command owns:
 - parameter parsing
 - change analysis
 - candidate generation
@@ -65,7 +65,7 @@ The repository should be organized in three layers:
 2. Module layer
    - `git`
 3. Command layer
-   - `/ry-git-commit`
+   - `/ry:git-commit`
      - params
      - analyzer
      - planner
@@ -77,8 +77,8 @@ The implementation should preserve future extensibility without adding unnecessa
 ## 5. Command Interface
 
 ### Supported invocation forms
-- `/ry-git-commit`
-- `/ry-git-commit --project <project> --branch <branch>`
+- `/ry:git-commit`
+- `/ry:git-commit --project <project> --branch <branch>`
 
 ### Resolution rules
 - If `--project` is omitted, use the current project.

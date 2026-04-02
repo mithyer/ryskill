@@ -1,15 +1,15 @@
 # ryskill Design Spec
 
 Date: 2026-04-01
-Topic: ryskill plugin with initial git module and /ry-git-commit command
+Topic: ryskill plugin with initial git module and /ry:git-commit command
 
 ## 1. Overview
 
-`ryskill` is a standalone Claude plugin repository. It is not embedded inside any existing project repository. The plugin is designed as a lightweight host with module-based expansion. The first module is `git`, and the first command is `/ry-git-commit`.
+`ryskill` is a standalone Claude plugin repository. It is not embedded inside any existing project repository. The plugin is designed as a lightweight host with module-based expansion. The first module is `git`, and the first command is `/ry:git-commit`.
 
-The goal of `/ry-git-commit` is to analyze the current working tree, split changes into transaction-oriented commit candidates, and let the user commit selected candidates while preserving all unselected changes in the working tree.
+The goal of `/ry:git-commit` is to analyze the current working tree, split changes into transaction-oriented commit candidates, and let the user commit selected candidates while preserving all unselected changes in the working tree.
 
-Phase 1 is not complete when unit tests pass. It is only complete when the plugin can be loaded locally, `/ry-git-commit` is recognized by Claude, and the command can run through at least one real repository scenario successfully.
+Phase 1 is not complete when unit tests pass. It is only complete when the plugin can be loaded locally, `/ry:git-commit` is recognized by Claude, and the command can run through at least one real repository scenario successfully.
 
 ## 2. Product Boundaries
 
@@ -18,7 +18,7 @@ Phase 1 is not complete when unit tests pass. It is only complete when the plugi
 - Installable Claude plugin structure
 - Modular host shape for future expansion
 - `git` module
-- `/ry-git-commit` command
+- `/ry:git-commit` command
 - Candidate generation for staged and unstaged changes
 - User selection flow for multiple commit candidates
 - Safe execution preserving unselected changes
@@ -51,7 +51,7 @@ Phase 1 is not complete when unit tests pass. It is only complete when the plugi
 Each module owns its domain logic and plugs into the host through a stable registration surface.
 
 ### Command responsibilities
-The `/ry-git-commit` command owns:
+The `/ry:git-commit` command owns:
 - parameter parsing
 - change analysis
 - candidate generation
@@ -72,7 +72,7 @@ The repository should be organized in three layers:
 2. Module layer
    - `git`
 3. Command layer
-   - `/ry-git-commit`
+   - `/ry:git-commit`
      - params
      - analyzer
      - planner
@@ -84,8 +84,8 @@ The implementation should preserve future extensibility without adding unnecessa
 ## 5. Command Interface
 
 ### Supported invocation forms
-- `/ry-git-commit`
-- `/ry-git-commit --project <project> --branch <branch>`
+- `/ry:git-commit`
+- `/ry:git-commit --project <project> --branch <branch>`
 
 ### Resolution rules
 - If `--project` is omitted, use the current project.
@@ -267,7 +267,7 @@ Phase 1 acceptance requires three separate checks, in this order:
 
 1. Documentation and command contract alignment
 2. Real plugin loading and recognition verification
-3. Real `/ry-git-commit` execution verification
+3. Real `/ry:git-commit` execution verification
 
 ### 15.1 Documentation and contract alignment
 Before plugin verification, the repository's outward-facing descriptions must match the actual implementation state.
@@ -291,16 +291,16 @@ If a public `plugin install` or marketplace entry exists, it should also be veri
 Plugin loading passes only if all of the following are true:
 - the real loading command succeeds
 - Claude recognizes the loaded plugin
-- `/ry-git-commit` is recognized as an available command
+- `/ry:git-commit` is recognized as an available command
 
 A repository that only contains `plugin.json` and command files does not meet the acceptance bar.
 
 ### 15.3 Real execution verification
-After plugin loading succeeds, `/ry-git-commit` must be exercised in a real temporary git repository.
+After plugin loading succeeds, `/ry:git-commit` must be exercised in a real temporary git repository.
 
 The minimum required scenario is:
 - prepare mixed staged and unstaged changes
-- invoke `/ry-git-commit`
+- invoke `/ry:git-commit`
 - select a candidate
 - verify one real commit is created
 - verify unselected changes remain in the correct staged or unstaged location
@@ -324,8 +324,8 @@ Do not widen scope beyond what is necessary to make the plugin loadable, recogni
 
 Phase 1 is done only when all of the following are true:
 - the plugin can be loaded successfully through a real Claude plugin path
-- `/ry-git-commit` is recognized by Claude
-- `/ry-git-commit` can complete at least one real repository scenario successfully
+- `/ry:git-commit` is recognized by Claude
+- `/ry:git-commit` can complete at least one real repository scenario successfully
 - unselected changes are preserved in the correct locations
 - the repository documentation and command contract describe the real behavior accurately
 

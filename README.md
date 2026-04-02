@@ -26,7 +26,7 @@ The command groups candidates into staged and unstaged sections, shows file list
 ### Direct source repository
 
 This repository contains the canonical plugin manifest and implementation.
-The command resolves its plugin root from the installed command file at runtime via `runtime/plugin-root.sh`, so the same command definition works from the source repo, a worktree, or a marketplace install.
+The command prefers the installed command file location when `CLAUDE_COMMAND_FILE` is available, and otherwise falls back only when it detects a local plugin checkout near the current working directory, so the same command definition works from the source repo, a worktree, or a marketplace install.
 
 ### Claude Code marketplace discovery
 

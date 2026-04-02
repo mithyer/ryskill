@@ -6,16 +6,40 @@ description: Split staged and unstaged changes into commit candidates and commit
 Resolve the installed plugin root at runtime from the command file location so the command works from source, a worktree, or a marketplace install.
 
 ```bash
+plugin_root_line=""
+plugin_root_helper=""
+
 if [ -n "${CLAUDE_COMMAND_FILE:-}" ]; then
   command_dir="$(cd "$(dirname "$CLAUDE_COMMAND_FILE")" && pwd)"
-  plugin_root="$({ bash "$command_dir/../runtime/plugin-root.sh"; } | sed -n 's/^plugin_root=//p')"
-else
-  printf 'ry:git-commit: CLAUDE_COMMAND_FILE is required to resolve the plugin root\n' >&2
+  candidate_helper="$command_dir/../runtime/plugin-root.sh"
+  if [ -f "$candidate_helper" ]; then
+    plugin_root_helper="$candidate_helper"
+  fi
+elif [ -f "$PWD/plugin.json" ]; then
+  for candidate_helper in "$PWD/runtime/plugin-root.sh" "$PWD/../runtime/plugin-root.sh"; do
+    if [ -f "$candidate_helper" ]; then
+      plugin_root_helper="$candidate_helper"
+      break
+    fi
+  done
+fi
+
+if [ -z "$plugin_root_helper" ]; then
+  printf 'ry:git-commit: unable to resolve plugin root; CLAUDE_COMMAND_FILE is unset and no local plugin checkout was detected from PWD=%s\n' "$PWD" >&2
   exit 1
 fi
 
-if [ -z "$plugin_root" ] || [ ! -d "$plugin_root" ]; then
-  printf 'ry:git-commit: failed to resolve plugin root via runtime/plugin-root.sh\n' >&2
+plugin_root_line="$(bash "$plugin_root_helper")"
+case "$plugin_root_line" in
+  plugin_root=*) plugin_root="${plugin_root_line#plugin_root=}" ;;
+  *)
+    printf 'ry:git-commit: failed to parse plugin root from %s\n' "$plugin_root_helper" >&2
+    exit 1
+    ;;
+esac
+
+if [ ! -d "$plugin_root" ]; then
+  printf 'ry:git-commit: resolved plugin root is not a directory: %s\n' "$plugin_root" >&2
   exit 1
 fi
 ```

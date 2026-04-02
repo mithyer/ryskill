@@ -356,6 +356,6 @@ git -C /Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit commit -m 
   - no TODO/TBD placeholders remain
   - each runnable step includes exact commands or exact replacement content
 - Consistency check:
-  - command name is consistently `ry-git-commit`
+  - internal file/path references consistently use `ry-git-commit`, while the user-facing slash command is consistently `/ry:git-commit`
   - local verification path is consistently `/Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit`
   - reload command is consistently `/reload-plugins`

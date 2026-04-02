@@ -61,9 +61,10 @@ Behavior requirements:
 - First, directly report staged changes and unstaged changes to the user before asking them to choose anything.
 - Format that summary as `Staged changes: ...` and `Unstaged changes: ...`.
 - When changes exist in a bucket, show numbered candidate lines using the candidate message, then show `Files: ...` on its own line without a leading bullet.
+- After presenting the summaries and candidate lines, prompt with exactly: `Select commit numbers, or 0 to over`.
 - Invoke runtime and module helpers through `bash` rather than relying on helper execute bits.
-- If only one candidate exists, skip selection and commit that candidate directly.
-- If multiple candidates exist, present them after the staged/unstaged summary, parse the user's selection, and build a plan from that selection.
+- Use the selected candidate message verbatim as the final git commit message.
+- If multiple candidates exist, parse the user's selection, and build a plan from that selection.
 - Execute the resulting non-empty plan rows in order.
 - Preserve any unselected changes.
 

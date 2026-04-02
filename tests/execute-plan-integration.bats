@@ -89,6 +89,20 @@ EOF
   [ -z "$(git -C "$repo_dir" diff -- selected-unstaged.txt)" ]
 }
 
+@test "commits selected candidate message verbatim" {
+  printf '%s\n' 'selected staged line' >> "$repo_dir/selected-staged.txt"
+  git -C "$repo_dir" add selected-staged.txt
+
+  cat <<'EOF' > "$plan_file"
+[staged]|1|fix(bike-trainer): update BikeTrainerViewController|selected-staged.txt
+EOF
+
+  run_execute_plan "$repo_dir" "$plan_file"
+
+  [ "$status" -eq 0 ]
+  [ "$(git -C "$repo_dir" log -1 --pretty=%s)" = "fix(bike-trainer): update BikeTrainerViewController" ]
+}
+
 @test "preserves unselected unstaged changes when a later candidate commit fails" {
   printf '%s\n' 'selected staged line' >> "$repo_dir/selected-staged.txt"
   printf '%s\n' 'leftover unstaged line' >> "$repo_dir/leftover-unstaged.txt"

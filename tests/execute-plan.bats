@@ -3,7 +3,7 @@
 setup() {
   temp_dir="$(mktemp -d)"
   plan_file="$temp_dir/plan.txt"
-  script_path="/Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit/modules/git/ry-git-commit/execute-plan.sh"
+  script_path="${BATS_TEST_DIRNAME}/../modules/git/ry-git-commit/execute-plan.sh"
   cat <<'EOF' > "$plan_file"
 [staged]|1|fix(parser): keep tokens explicit|runtime/selection-parser.sh
 EOF

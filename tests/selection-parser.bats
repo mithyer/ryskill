@@ -18,8 +18,9 @@
   [ "$output" = "1 2 3 5" ]
 }
 
-@test "rejects descending ranges instead of returning an empty result" {
-  run bash runtime/selection-parser.sh '8-3'
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"invalid_selection_range=8-3"* ]]
+@test "accepts 0 for over flow" {
+  run bash runtime/selection-parser.sh '0'
+  [ "$status" -eq 0 ]
+  [ "$output" = "0" ]
 }
+

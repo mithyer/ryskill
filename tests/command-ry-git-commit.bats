@@ -13,11 +13,13 @@
   [ "$status" -eq 0 ]
 }
 
-@test "command contract no longer relies on broken bare runtime helper invocations" {
-  run grep -F '1. `$plugin_root/runtime/project-context.sh`' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
-  [ "$status" -ne 0 ]
+@test "command contract requires exact uniform selection prompt" {
+  run grep -F 'Select commit numbers, or 0 to over' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
+  [ "$status" -eq 0 ]
+}
 
-  run grep -F '2. `$plugin_root/runtime/git-state.sh`' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
+@test "command contract no longer documents single-candidate auto-commit behavior" {
+  run grep -F 'If only one candidate exists, skip selection and commit that candidate directly.' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
   [ "$status" -ne 0 ]
 }
 

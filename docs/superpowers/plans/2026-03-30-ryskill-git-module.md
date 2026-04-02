@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build the standalone `ryskill` Claude plugin repository with an initial `git` module and `/ry-git-commit` command that splits working tree changes into transaction-oriented commit candidates while preserving all unselected changes.
+**Goal:** Build the standalone `ryskill` Claude plugin repository with an initial `git` module and `/ry:git-commit` command that splits working tree changes into transaction-oriented commit candidates while preserving all unselected changes.
 
-**Architecture:** The implementation uses a lightweight plugin host with a single `git` module. `/ry-git-commit` is decomposed into focused units for argument parsing, repository snapshotting, staged/unstaged candidate analysis, user-facing presentation, selection parsing, execution planning, and safe git mutation helpers.
+**Architecture:** The implementation uses a lightweight plugin host with a single `git` module. `/ry:git-commit` is decomposed into focused units for argument parsing, repository snapshotting, staged/unstaged candidate analysis, user-facing presentation, selection parsing, execution planning, and safe git mutation helpers.
 
 **Tech Stack:** Claude plugin files, Markdown specs/plans, shell/git commands, focused helper scripts for patch analysis and execution, conventional commits.
 
@@ -41,7 +41,7 @@
 **Files:**
 - Create: `plugin.json`
 - Create: `README.md`
-- Create: `commands/ry-git-commit.md`
+- Create: `commands/ry:git-commit.md`
 
 - [ ] **Step 1: Write the plugin metadata file**
 
@@ -49,11 +49,11 @@
 {
   "name": "ryskill",
   "version": "0.1.0",
-  "description": "Modular Claude plugin with git utilities, starting with /ry-git-commit.",
+  "description": "Modular Claude plugin with git utilities, starting with /ry:git-commit.",
   "commands": [
     {
       "name": "ry-git-commit",
-      "file": "commands/ry-git-commit.md"
+      "file": "commands/ry:git-commit.md"
     }
   ]
 }
@@ -88,7 +88,7 @@ Supported arguments:
 `ryskill` is a standalone Claude plugin repository installed from GitHub via `plugin install`.
 
 ## Commands
-- `/ry-git-commit`
+- `/ry:git-commit`
 
 ## Current scope
 - standalone plugin host
@@ -101,13 +101,13 @@ Document the GitHub install command here once the repository remote exists.
 
 - [ ] **Step 4: Verify created files exist**
 
-Run: `ls plugin.json README.md commands/ry-git-commit.md`
+Run: `ls plugin.json README.md commands/ry:git-commit.md`
 Expected: all three paths are listed
 
 - [ ] **Step 5: Commit skeleton**
 
 ```bash
-git add plugin.json README.md commands/ry-git-commit.md
+git add plugin.json README.md commands/ry:git-commit.md
 git commit -m "feat: add ryskill plugin skeleton"
 ```
 
@@ -576,7 +576,7 @@ git commit -m "feat(git): add execution helper skeleton"
 ### Task 9: Wire the command end-to-end
 
 **Files:**
-- Modify: `commands/ry-git-commit.md`
+- Modify: `commands/ry:git-commit.md`
 - Modify: `runtime/project-context.sh`
 - Modify: `runtime/git-state.sh`
 - Modify: `runtime/selection-parser.sh`
@@ -605,13 +605,13 @@ Always preserve unselected changes.
 
 - [ ] **Step 2: Verify the command contract reflects the implemented helpers**
 
-Run: `grep -n 'runtime/project-context.sh\|modules/git/ry-git-commit/execute-plan.sh' commands/ry-git-commit.md`
+Run: `grep -n 'runtime/project-context.sh\|modules/git/ry-git-commit/execute-plan.sh' commands/ry:git-commit.md`
 Expected: both helper references are present
 
 - [ ] **Step 3: Commit the end-to-end wiring**
 
 ```bash
-git add commands/ry-git-commit.md runtime/project-context.sh runtime/git-state.sh runtime/selection-parser.sh modules/git/ry-git-commit/analyze-staged.sh modules/git/ry-git-commit/analyze-unstaged.sh modules/git/ry-git-commit/present-candidates.sh modules/git/ry-git-commit/build-execution-plan.sh modules/git/ry-git-commit/execute-plan.sh
+git add commands/ry:git-commit.md runtime/project-context.sh runtime/git-state.sh runtime/selection-parser.sh modules/git/ry-git-commit/analyze-staged.sh modules/git/ry-git-commit/analyze-unstaged.sh modules/git/ry-git-commit/present-candidates.sh modules/git/ry-git-commit/build-execution-plan.sh modules/git/ry-git-commit/execute-plan.sh
 git commit -m "feat(git): wire ry-git-commit workflow"
 ```
 
@@ -619,7 +619,7 @@ git commit -m "feat(git): wire ry-git-commit workflow"
 
 **Files:**
 - Modify: `README.md`
-- Modify: `commands/ry-git-commit.md`
+- Modify: `commands/ry:git-commit.md`
 
 - [ ] **Step 1: Update README usage section with final examples**
 
@@ -627,10 +627,10 @@ git commit -m "feat(git): wire ry-git-commit workflow"
 ## Usage
 
 ### Default current repository
-`/ry-git-commit`
+`/ry:git-commit`
 
 ### Explicit project and branch
-`/ry-git-commit --project /path/to/repo --branch feature/demo`
+`/ry:git-commit --project /path/to/repo --branch feature/demo`
 
 ### Multi-candidate flow
 The command groups candidates into staged and unstaged sections, shows file lists, and asks which numbered candidates to commit.
@@ -649,7 +649,7 @@ Expected: project path and branch are printed, then `unsafe_state=clean_for_anal
 - [ ] **Step 4: Commit docs and verification updates**
 
 ```bash
-git add README.md commands/ry-git-commit.md
+git add README.md commands/ry:git-commit.md
 git commit -m "docs: finalize ry-git-commit usage"
 ```
 
@@ -660,7 +660,7 @@ git commit -m "docs: finalize ry-git-commit usage"
 ### Spec coverage
 - Standalone `ryskill` repository and installable plugin surface: covered in Task 1
 - Modular host shape with initial git module: covered in Tasks 1 and 9
-- `/ry-git-commit` default and explicit context resolution: covered in Task 2
+- `/ry:git-commit` default and explicit context resolution: covered in Task 2
 - Unsafe-state rejection boundary: covered in Task 3
 - Selection parsing rules: covered in Task 4
 - Candidate grouping with staged/unstaged labels and file lists: covered in Task 5

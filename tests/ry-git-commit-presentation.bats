@@ -13,6 +13,15 @@ EOF
   [[ "$output" != *"[staged] 1."* ]]
 }
 
+@test "renders analyzed candidate prefix verbatim instead of natural-language rewrite" {
+  run bash modules/git/ry-git-commit/present-candidates.sh <<'EOF'
+[unstaged]|1|fix(bike-trainer): update BikeTrainerViewController|RidingPlatform/RidingPlatform/Main/DeviceDetails/BikeTrainer/BikeTrainerViewController.swift
+EOF
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"1. fix(bike-trainer): update BikeTrainerViewController"* ]]
+  [[ "$output" != *"Add test comment in BikeTrainerViewController"* ]]
+}
+
 @test "renders no staged changes summary without bulleting file labels" {
   run bash modules/git/ry-git-commit/present-candidates.sh <<'EOF'
 [unstaged]|1|fix(bike-trainer): update device details summary|RidingPlatform/RidingPlatform/Main/DeviceDetails/BikeTrainer/BikeTrainerViewController.swift

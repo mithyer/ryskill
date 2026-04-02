@@ -28,6 +28,11 @@
   [ "$status" -eq 0 ]
 }
 
+@test "command contract does not rely on python packaging for cache fallback" {
+  run grep -F 'from packaging.version import Version' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
+  [ "$status" -ne 0 ]
+}
+
 @test "command contract reports cache lookup in plugin-root resolution failure" {
   run grep -F 'no installed ryskill plugin was found under $HOME/.claude/plugins/cache/ryskill-marketplace/ryskill' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
   [ "$status" -eq 0 ]

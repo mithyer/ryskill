@@ -1,0 +1,12 @@
+Normalization rule for historical docs/superpowers/plans/*.md
+
+- Normalize user-facing command references to `/ry:git-commit`.
+- Preserve real repository file/module paths that still use `ry-git-commit` in filenames.
+- Normalize marketplace ownership/install examples to `mithyer/ryskill-marketplace` where the text is instructional.
+
+Confirmed current repository contract
+
+- README usage and installation wording shows the user-facing slash command `/ry:git-commit`.
+- README marketplace installation example uses marketplace owner `mithyer/ryskill-marketplace`.
+- plugin.json defines command name `ry:git-commit`.
+- plugin.json maps that command to `commands/ry-git-commit.md`.

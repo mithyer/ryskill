@@ -41,7 +41,7 @@
 **Files:**
 - Create: `plugin.json`
 - Create: `README.md`
-- Create: `commands/ry:git-commit.md`
+- Create: `commands/ry-git-commit.md`
 
 - [ ] **Step 1: Write the plugin metadata file**
 
@@ -53,7 +53,7 @@
   "commands": [
     {
       "name": "ry-git-commit",
-      "file": "commands/ry:git-commit.md"
+      "file": "commands/ry-git-commit.md"
     }
   ]
 }
@@ -101,13 +101,13 @@ Document the GitHub install command here once the repository remote exists.
 
 - [ ] **Step 4: Verify created files exist**
 
-Run: `ls plugin.json README.md commands/ry:git-commit.md`
+Run: `ls plugin.json README.md commands/ry-git-commit.md`
 Expected: all three paths are listed
 
 - [ ] **Step 5: Commit skeleton**
 
 ```bash
-git add plugin.json README.md commands/ry:git-commit.md
+git add plugin.json README.md commands/ry-git-commit.md
 git commit -m "feat: add ryskill plugin skeleton"
 ```
 
@@ -576,7 +576,7 @@ git commit -m "feat(git): add execution helper skeleton"
 ### Task 9: Wire the command end-to-end
 
 **Files:**
-- Modify: `commands/ry:git-commit.md`
+- Modify: `commands/ry-git-commit.md`
 - Modify: `runtime/project-context.sh`
 - Modify: `runtime/git-state.sh`
 - Modify: `runtime/selection-parser.sh`
@@ -605,13 +605,13 @@ Always preserve unselected changes.
 
 - [ ] **Step 2: Verify the command contract reflects the implemented helpers**
 
-Run: `grep -n 'runtime/project-context.sh\|modules/git/ry-git-commit/execute-plan.sh' commands/ry:git-commit.md`
+Run: `grep -n 'runtime/project-context.sh\|modules/git/ry-git-commit/execute-plan.sh' commands/ry-git-commit.md`
 Expected: both helper references are present
 
 - [ ] **Step 3: Commit the end-to-end wiring**
 
 ```bash
-git add commands/ry:git-commit.md runtime/project-context.sh runtime/git-state.sh runtime/selection-parser.sh modules/git/ry-git-commit/analyze-staged.sh modules/git/ry-git-commit/analyze-unstaged.sh modules/git/ry-git-commit/present-candidates.sh modules/git/ry-git-commit/build-execution-plan.sh modules/git/ry-git-commit/execute-plan.sh
+git add commands/ry-git-commit.md runtime/project-context.sh runtime/git-state.sh runtime/selection-parser.sh modules/git/ry-git-commit/analyze-staged.sh modules/git/ry-git-commit/analyze-unstaged.sh modules/git/ry-git-commit/present-candidates.sh modules/git/ry-git-commit/build-execution-plan.sh modules/git/ry-git-commit/execute-plan.sh
 git commit -m "feat(git): wire ry-git-commit workflow"
 ```
 
@@ -619,7 +619,7 @@ git commit -m "feat(git): wire ry-git-commit workflow"
 
 **Files:**
 - Modify: `README.md`
-- Modify: `commands/ry:git-commit.md`
+- Modify: `commands/ry-git-commit.md`
 
 - [ ] **Step 1: Update README usage section with final examples**
 
@@ -649,7 +649,7 @@ Expected: project path and branch are printed, then `unsafe_state=clean_for_anal
 - [ ] **Step 4: Commit docs and verification updates**
 
 ```bash
-git add README.md commands/ry:git-commit.md
+git add README.md commands/ry-git-commit.md
 git commit -m "docs: finalize ry-git-commit usage"
 ```
 

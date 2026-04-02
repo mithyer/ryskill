@@ -10,6 +10,8 @@ First, directly tell the user which changes are currently staged and which are c
 ```bash
 plugin_root_line=""
 plugin_root_helper=""
+plugin_cache_root="$HOME/.claude/plugins/cache/ryskill-marketplace/ryskill"
+installed_plugin_root=""
 
 if [ -n "${CLAUDE_COMMAND_FILE:-}" ]; then
   command_dir="$(cd "$(dirname "$CLAUDE_COMMAND_FILE")" && pwd)"
@@ -26,8 +28,39 @@ elif [ -f "$PWD/plugin.json" ]; then
   done
 fi
 
+if [ -z "$plugin_root_helper" ] && [ -d "$plugin_cache_root" ]; then
+  installed_plugin_root="$(python3 - "$plugin_cache_root" <<'PY'
+import sys
+from pathlib import Path
+from packaging.version import Version
+
+root = Path(sys.argv[1])
+versions = []
+for path in root.iterdir():
+    if not path.is_dir():
+        continue
+    try:
+        version = Version(path.name)
+    except Exception:
+        continue
+    if (path / 'plugin.json').is_file() and (path / 'runtime' / 'plugin-root.sh').is_file():
+        versions.append((version, path))
+
+if versions:
+    versions.sort()
+    print(versions[-1][1])
+PY
+)"
+  if [ -n "$installed_plugin_root" ]; then
+    candidate_helper="$installed_plugin_root/runtime/plugin-root.sh"
+    if [ -f "$candidate_helper" ]; then
+      plugin_root_helper="$candidate_helper"
+    fi
+  fi
+fi
+
 if [ -z "$plugin_root_helper" ]; then
-  printf 'ry:git-commit: unable to resolve plugin root; CLAUDE_COMMAND_FILE is unset and no local plugin checkout was detected from PWD=%s\n' "$PWD" >&2
+  printf 'ry:git-commit: unable to resolve plugin root; CLAUDE_COMMAND_FILE is unset, PWD=%s is not a local plugin checkout, and no installed ryskill plugin was found under $HOME/.claude/plugins/cache/ryskill-marketplace/ryskill\n' "$PWD" >&2
   exit 1
 fi
 

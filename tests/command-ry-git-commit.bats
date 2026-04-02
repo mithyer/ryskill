@@ -23,6 +23,16 @@
   [ "$status" -ne 0 ]
 }
 
+@test "command contract falls back to installed cache when CLAUDE_COMMAND_FILE is unset" {
+  run grep -F '$HOME/.claude/plugins/cache/ryskill-marketplace/ryskill' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
+  [ "$status" -eq 0 ]
+}
+
+@test "command contract reports cache lookup in plugin-root resolution failure" {
+  run grep -F 'no installed ryskill plugin was found under $HOME/.claude/plugins/cache/ryskill-marketplace/ryskill' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
+  [ "$status" -eq 0 ]
+}
+
 @test "build execution plan passes candidate rows through unchanged" {
   script_path="$BATS_TEST_DIRNAME/../modules/git/ry-git-commit/build-execution-plan.sh"
   candidate_row='[staged]|1|refactor: review staged change in selected-staged.txt|selected-staged.txt'

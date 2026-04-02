@@ -8,6 +8,11 @@
   [ "$status" -eq 0 ]
 }
 
+@test "command contract reports staged and unstaged changes before commit flow" {
+  run grep -F 'First, directly tell the user which changes are currently staged and which are currently unstaged.' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
+  [ "$status" -eq 0 ]
+}
+
 @test "command contract no longer relies on broken bare runtime helper invocations" {
   run grep -F '1. `$plugin_root/runtime/project-context.sh`' "$BATS_TEST_DIRNAME/../commands/ry-git-commit.md"
   [ "$status" -ne 0 ]

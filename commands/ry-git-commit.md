@@ -3,7 +3,9 @@ name: ry:git-commit
 description: Split staged and unstaged changes into commit candidates and commit a selected transaction safely.
 ---
 
-Resolve the installed plugin root at runtime from the command file location so the command works from source, a worktree, or a marketplace install.
+Resolve the installed plugin root at runtime from the command file location so the command works from source, a worktree, or a marketplace install. The command remains explicit slash invocation via `/ry:git-commit`.
+
+First, directly tell the user which changes are currently staged and which are currently unstaged. Then continue into the existing commit flow.
 
 ```bash
 plugin_root_line=""
@@ -56,10 +58,13 @@ Use the helpers in this order after root resolution:
 
 Behavior requirements:
 - Analyze staged and unstaged changes separately after resolving `project_path` and validating repository safety.
+- First, directly report staged changes and unstaged changes to the user before asking them to choose anything.
+- Format that summary as `Staged changes: ...` and `Unstaged changes: ...`.
+- When changes exist in a bucket, show numbered candidate lines using the candidate message, then show `Files: ...` on its own line without a leading bullet.
 - Invoke runtime and module helpers through `bash` rather than relying on helper execute bits.
 - If only one candidate exists, skip selection and commit that candidate directly.
-- If multiple candidates exist, present them first, parse the user's selection, and build a plan from that selection.
-- Current limitation: execution commits only the first non-empty plan row from the resulting plan.
+- If multiple candidates exist, present them after the staged/unstaged summary, parse the user's selection, and build a plan from that selection.
+- Execute the resulting non-empty plan rows in order.
 - Preserve any unselected changes.
 
 Supported arguments:

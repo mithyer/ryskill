@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make `ryskill` load through a real Claude plugin path and verify that `/ry-git-commit` is recognized and can complete at least one real repository flow successfully.
+**Goal:** Make `ryskill` load through a real Claude plugin path and verify that `/ry:git-commit` is recognized and can complete at least one real repository flow successfully.
 
 **Architecture:** The work stays narrowly focused on the plugin surface and the existing `ry-git-commit` execution path. First align the outward-facing contract and README with the real implementation, then verify the command behavior with automated tests, then verify plugin loading and command recognition through Claude’s real local plugin workflow, and finally run one real end-to-end scenario in a temporary repository.
 
@@ -103,7 +103,7 @@ Expected README content after edit:
 - local development loading path using `claude --plugin-dir`
 - reload step using `/reload-plugins`
 - recognition check using `/` or `/help`
-- one minimal `/ry-git-commit` usage example
+- one minimal `/ry:git-commit` usage example
 - no placeholder or implied public install path unless one actually exists
 ```
 
@@ -120,7 +120,7 @@ Expected: one matching line showing the placeholder
 `ryskill` is a standalone Claude plugin repository for Claude Code.
 
 ## Commands
-- `/ry-git-commit`
+- `/ry:git-commit`
 
 ## Current scope
 - standalone plugin host
@@ -142,16 +142,16 @@ After editing plugin files, reload active plugins inside Claude Code:
 ```
 
 To verify the command is recognized:
-- type `/` and look for `/ry-git-commit`
+- type `/` and look for `/ry:git-commit`
 - or run `/help`
 
 ## Usage
 
 ### Default current repository
-`/ry-git-commit`
+`/ry:git-commit`
 
 ### Explicit project and branch
-`/ry-git-commit --project /path/to/repo --branch feature/demo`
+`/ry:git-commit --project /path/to/repo --branch feature/demo`
 
 ### Multi-candidate flow
 The command groups candidates into staged and unstaged sections, shows file lists, and asks which numbered candidates to commit.
@@ -234,7 +234,7 @@ Expected: output reports the plugin and its command files were reloaded without 
 ```text
 Inside Claude:
 1. type `/`
-2. confirm `/ry-git-commit` appears in the command list
+2. confirm `/ry:git-commit` appears in the command list
 3. if needed, run `/help` and confirm the command is listed there too
 ```
 
@@ -255,7 +255,7 @@ git -C /Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit add plugin
 git -C /Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit commit -m "fix(plugin): make ry-git-commit load cleanly"
 ```
 
-### Task 5: Run one real `/ry-git-commit` repository scenario manually
+### Task 5: Run one real `/ry:git-commit` repository scenario manually
 
 **Files:**
 - Test: `.worktrees/ry-git-commit/modules/git/ry-git-commit/execute-plan.sh`
@@ -267,10 +267,10 @@ git -C /Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit commit -m 
 Run: `tmpdir="$(mktemp -d)" && git init "$tmpdir" && git -C "$tmpdir" config user.name "Test User" && git -C "$tmpdir" config user.email "test@example.com" && printf 'base\n' > "$tmpdir/tracked.txt" && git -C "$tmpdir" add tracked.txt && git -C "$tmpdir" commit -m "Initial commit" && printf 'selected staged\n' > "$tmpdir/selected-staged.txt" && git -C "$tmpdir" add selected-staged.txt && printf 'leftover unstaged\n' > "$tmpdir/leftover-unstaged.txt" && printf '%s\n' "$tmpdir"`
 Expected: command prints the temp repo path after creating the fixture repo
 
-- [ ] **Step 2: Invoke `/ry-git-commit` against that repository inside Claude**
+- [ ] **Step 2: Invoke `/ry:git-commit` against that repository inside Claude**
 
 ```text
-/ry-git-commit --project <tmpdir>
+/ry:git-commit --project <tmpdir>
 ```
 
 Expected: Claude presents one or more candidate commits derived from the temporary repo changes
@@ -298,7 +298,7 @@ Fix order:
 1. command registration mismatch -> command metadata/docs
 2. command orchestration mismatch -> command helper chain
 3. execution/state mismatch -> execute-plan.sh or execute-plan-lib.sh
-4. after each fix: `/reload-plugins`, rerun `/ry-git-commit --project <tmpdir>`, and repeat the same shell verification
+4. after each fix: `/reload-plugins`, rerun `/ry:git-commit --project <tmpdir>`, and repeat the same shell verification
 ```
 
 ### Task 6: Record final acceptance evidence and clean up optional smoke coverage
@@ -313,7 +313,7 @@ Fix order:
 Acceptance evidence must show:
 - plugin loaded via `claude --plugin-dir /Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit`
 - `/reload-plugins` succeeded
-- `/ry-git-commit` appeared in `/` or `/help`
+- `/ry:git-commit` appeared in `/` or `/help`
 - one real temp repo scenario created a commit successfully
 - unselected changes remained in the correct location
 ```
@@ -350,12 +350,12 @@ git -C /Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit commit -m 
 - Spec coverage check:
   - documentation and contract alignment -> Tasks 1-2
   - real installation / loading verification -> Task 4
-  - real `/ry-git-commit` execution verification -> Task 5
+  - real `/ry:git-commit` execution verification -> Task 5
   - focused regression protection for execute-plan behavior -> Tasks 3 and 6
 - Placeholder scan:
   - no TODO/TBD placeholders remain
   - each runnable step includes exact commands or exact replacement content
 - Consistency check:
-  - command name is consistently `ry-git-commit`
+  - internal file/path references consistently use `ry-git-commit`, while the user-facing slash command is consistently `/ry:git-commit`
   - local verification path is consistently `/Users/ray/Documents/projects/ryskill/.worktrees/ry-git-commit`
   - reload command is consistently `/reload-plugins`

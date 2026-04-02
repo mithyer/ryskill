@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build the standalone `ryskill` Claude plugin repository with an initial `git` module and `/ry-git-commit` command that splits working tree changes into transaction-oriented commit candidates while preserving all unselected changes.
+**Goal:** Build the standalone `ryskill` Claude plugin repository with an initial `git` module and `/ry:git-commit` command that splits working tree changes into transaction-oriented commit candidates while preserving all unselected changes.
 
-**Architecture:** The implementation uses a lightweight plugin host with a single `git` module. `/ry-git-commit` is decomposed into focused units for argument parsing, repository snapshotting, staged/unstaged candidate analysis, user-facing presentation, selection parsing, execution planning, and safe git mutation helpers.
+**Architecture:** The implementation uses a lightweight plugin host with a single `git` module. `/ry:git-commit` is decomposed into focused units for argument parsing, repository snapshotting, staged/unstaged candidate analysis, user-facing presentation, selection parsing, execution planning, and safe git mutation helpers.
 
 **Tech Stack:** Claude plugin files, Markdown specs/plans, shell/git commands, focused helper scripts for patch analysis and execution, conventional commits.
 
@@ -49,7 +49,7 @@
 {
   "name": "ryskill",
   "version": "0.1.0",
-  "description": "Modular Claude plugin with git utilities, starting with /ry-git-commit.",
+  "description": "Modular Claude plugin with git utilities, starting with /ry:git-commit.",
   "commands": [
     {
       "name": "ry-git-commit",
@@ -88,7 +88,7 @@ Supported arguments:
 `ryskill` is a standalone Claude plugin repository installed from GitHub via `plugin install`.
 
 ## Commands
-- `/ry-git-commit`
+- `/ry:git-commit`
 
 ## Current scope
 - standalone plugin host
@@ -627,10 +627,10 @@ git commit -m "feat(git): wire ry-git-commit workflow"
 ## Usage
 
 ### Default current repository
-`/ry-git-commit`
+`/ry:git-commit`
 
 ### Explicit project and branch
-`/ry-git-commit --project /path/to/repo --branch feature/demo`
+`/ry:git-commit --project /path/to/repo --branch feature/demo`
 
 ### Multi-candidate flow
 The command groups candidates into staged and unstaged sections, shows file lists, and asks which numbered candidates to commit.
@@ -660,7 +660,7 @@ git commit -m "docs: finalize ry-git-commit usage"
 ### Spec coverage
 - Standalone `ryskill` repository and installable plugin surface: covered in Task 1
 - Modular host shape with initial git module: covered in Tasks 1 and 9
-- `/ry-git-commit` default and explicit context resolution: covered in Task 2
+- `/ry:git-commit` default and explicit context resolution: covered in Task 2
 - Unsafe-state rejection boundary: covered in Task 3
 - Selection parsing rules: covered in Task 4
 - Candidate grouping with staged/unstaged labels and file lists: covered in Task 5

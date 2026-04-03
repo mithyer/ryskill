@@ -1,0 +1,35 @@
+{
+  "name": "ryskill",
+  "version": "0.2.5",
+  "description": "Git commit workflow skill for staged and unstaged changes.",
+  "author": {
+    "name": "Ray",
+    "email": "brightmar@gmail.com",
+    "url": "https://github.com/mithyer"
+  },
+  "homepage": "https://github.com/mithyer/ryskill",
+  "repository": "https://github.com/mithyer/ryskill",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commit",
+    "workflow",
+    "codex"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "RY Skill",
+    "shortDescription": "Structured git commit workflow for Codex",
+    "longDescription": "Analyze staged and unstaged changes, present commit candidates, and execute selected commit plans safely.",
+    "developerName": "Ray",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/mithyer/ryskill",
+    "defaultPrompt": [
+      "Help me review staged and unstaged changes and create safe scoped commits."
+    ]
+  }
+}

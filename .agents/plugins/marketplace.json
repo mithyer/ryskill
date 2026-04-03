@@ -1,0 +1,20 @@
+{
+  "name": "ryskill-local",
+  "interface": {
+    "displayName": "RY Skill Local"
+  },
+  "plugins": [
+    {
+      "name": "ryskill",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ryskill"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
